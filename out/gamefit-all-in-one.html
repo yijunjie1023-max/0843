@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GameFit 单机全页演示</title>
+    <meta
+      name="description"
+      content="将所有主要页面与交互打包在一个 HTML 内；双击即可打开，数据仅存本文件使用的本地存储键。"
+    />
+    <style>
+      :root {
+        --bg: #1a1a2e;
+        --surface: #252542;
+        --surface2: #2d2d4a;
+        --ink: #e8e8ef;
+        --muted: #9b9bb8;
+        --green: #58cc02;
+        --green-d: #46a302;
+        --blue: #1cb0f6;
+        --blue-d: #1899d6;
+        --warn: #ffc800;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "PingFang SC",
+          "Microsoft YaHei",
+          sans-serif;
+        padding-bottom: 5.5rem;
+      }
+      .shell-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        border-bottom: 2px solid var(--surface2);
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(8px);
+      }
+      .shell-header-inner {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 0.65rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .logo {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        background: var(--green);
+        color: #fff;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 0 0 var(--green-d);
+      }
+      .shell-header h2 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 900;
+      }
+      .shell-header p {
+        margin: 0;
+        font-size: 0.7rem;
+        color: var(--muted);
+      }
+      main {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 2rem;
+      }
+      .hidden {
+        display: none !important;
+      }
+      h1.page-title {
+        margin: 0;
+        font-size: clamp(1.6rem, 4vw, 2.25rem);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin: 0 0 0.25rem;
+      }
+      .subtitle {
+        margin: 0.35rem 0 0;
+        font-size: 0.875rem;
+        color: var(--muted);
+      }
+      .card {
+        background: var(--surface);
+        border: 2px solid var(--surface2);
+        border-radius: 1.25rem;
+        padding: 1rem 1.1rem;
+        margin-top: 1rem;
+      }
+      .card-title {
+        margin: 0 0 0.65rem;
+        font-size: 1rem;
+        font-weight: 800;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        padding: 0.65rem 1rem;
+        border-radius: 1rem;
+        font-weight: 800;
+        font-size: 0.875rem;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          transform 0.08s ease,
+          box-shadow 0.08s ease;
+        font-family: inherit;
+      }
+      .btn:active:not(:disabled) {
+        transform: translateY(2px);
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .btn-green {
+        background: var(--green);
+        color: #fff;
+        border-color: var(--green-d);
+        box-shadow: 0 4px 0 0 var(--green-d);
+      }
+      .btn-green:active:not(:disabled) {
+        box-shadow: 0 2px 0 0 var(--green-d);
+      }
+      .btn-blue {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue-d);
+        box-shadow: 0 4px 0 0 var(--blue-d);
+      }
+      .btn-blue:active:not(:disabled) {
+        box-shadow: 0 2px 0 0 var(--blue-d);
+      }
+      .btn-ghost {
+        background: var(--surface);
+        color: var(--ink);
+        border-color: var(--surface2);
+        box-shadow: 0 4px 0 0 #12121f;
+      }
+      .btn-ghost:active:not(:disabled) {
+        box-shadow: 0 2px 0 0 #12121f;
+      }
+      .btn-sm {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+        border-radius: 0.75rem;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .row-between {
+        justify-content: space-between;
+      }
+      input[type="number"],
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.65rem 0.85rem;
+        border-radius: 0.85rem;
+        border: 2px solid var(--surface2);
+        background: var(--bg);
+        color: var(--ink);
+        font-weight: 700;
+        font-family: inherit;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--green);
+      }
+      label span {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 0.25rem;
+      }
+      .pill {
+        display: inline-block;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.68rem;
+        font-weight: 800;
+      }
+      .pill-green {
+        background: rgba(88, 204, 2, 0.18);
+        color: var(--green);
+      }
+      .pill-blue {
+        background: rgba(28, 176, 246, 0.2);
+        color: var(--blue);
+      }
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        border-top: 2px solid var(--surface2);
+        background: rgba(26, 26, 46, 0.96);
+        backdrop-filter: blur(8px);
+        padding: 0.35rem 0.35rem calc(0.35rem + env(safe-area-inset-bottom, 0));
+      }
+      .bottom-nav-inner {
+        max-width: 48rem;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.2rem;
+      }
+      .nav-tab {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        background: transparent;
+        border-radius: 0.75rem;
+        padding: 0.45rem 0.15rem;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .nav-tab.active {
+        background: var(--surface2);
+        color: var(--green);
+      }
+      .nav-tab .ico {
+        display: block;
+        font-size: 1.25rem;
+        line-height: 1.2;
+      }
+      .progress {
+        height: 0.65rem;
+        border-radius: 999px;
+        background: var(--bg);
+        border: 1px solid rgba(28, 176, 246, 0.35);
+        overflow: hidden;
+      }
+      .progress > i {
+        display: block;
+        height: 100%;
+        background: var(--blue);
+        border-radius: 999px;
+        transition: width 0.25s ease;
+      }
+      .goal-grid {
+        display: grid;
+        gap: 0.45rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media (min-width: 520px) {
+        .goal-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .goal-opt {
+        text-align: left;
+        padding: 0.65rem;
+        border-radius: 0.85rem;
+        border: 2px solid var(--surface2);
+        background: var(--bg);
+        color: var(--muted);
+        font-weight: 800;
+        font-size: 0.8rem;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .goal-opt.on {
+        border-color: var(--green);
+        background: rgba(88, 204, 2, 0.12);
+        color: var(--green);
+      }
+      .beast-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      @media (min-width: 520px) {
+        .beast-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .beast-card {
+        border: 2px solid var(--surface2);
+        border-radius: 1rem;
+        padding: 0.45rem;
+        text-align: left;
+        cursor: pointer;
+        background: var(--bg);
+        font-family: inherit;
+      }
+      .beast-card.on {
+        border-color: var(--green);
+        box-shadow: 0 0 0 2px rgba(88, 204, 2, 0.25);
+      }
+      .beast-sil {
+        height: 5rem;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        font-size: 2.75rem;
+        filter: grayscale(0.35) opacity(0.75);
+      }
+      .beast-card.on .beast-sil {
+        filter: none;
+        opacity: 1;
+      }
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.55);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 1rem;
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+      }
+      @media (min-width: 640px) {
+        .overlay {
+          align-items: center;
+        }
+      }
+      .sheet {
+        width: 100%;
+        max-width: 26rem;
+        max-height: min(88dvh, 32rem);
+        overflow: auto;
+        background: var(--surface);
+        border: 2px solid var(--surface2);
+        border-radius: 1.25rem;
+        padding: 1.1rem;
+      }
+      .sheet h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+      }
+      .task-line {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.45rem 0;
+        border-bottom: 1px solid var(--surface2);
+        font-size: 0.8rem;
+      }
+      .task-line:last-child {
+        border-bottom: none;
+      }
+      .check {
+        width: 1.1rem;
+        height: 1.1rem;
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+        accent-color: var(--green);
+      }
+      table.simple {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.78rem;
+      }
+      table.simple th,
+      table.simple td {
+        padding: 0.45rem 0.35rem;
+        text-align: left;
+        border-bottom: 1px solid var(--surface2);
+      }
+      .fade-in {
+        animation: fi 0.2s ease;
+      }
+      @keyframes fi {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .stage-beast-hit {
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        padding: 0;
+        border-radius: 1rem;
+        box-shadow: 0 0 28px rgba(88, 204, 2, 0.28);
+      }
+      .stage-beast {
+        font-size: clamp(4rem, 18vw, 6rem);
+        line-height: 1;
+        display: block;
+        padding: 0.25rem 0 0;
+      }
+      .toast {
+        position: fixed;
+        bottom: 6rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 120;
+        background: var(--surface2);
+        color: var(--ink);
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border: 2px solid var(--green);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shell-header hidden" id="shell-header">
+      <div class="shell-header-inner">
+        <div class="logo" aria-hidden="true">幻</div>
+        <div>
+          <h2>游戏化运动激励工具</h2>
+          <p id="shell-tagline">单机全页演示 · 本地存档</p>
+        </div>
+      </div>
+    </header>
+
+    <main id="main"></main>
+
+    <nav class="bottom-nav hidden" id="bottom-nav" aria-label="主导航">
+      <div class="bottom-nav-inner">
+        <button type="button" class="nav-tab active" data-route="home">
+          <span class="ico" aria-hidden="true">🏠</span>首页
+        </button>
+        <button type="button" class="nav-tab" data-route="exercise">
+          <span class="ico" aria-hidden="true">💪</span>运动
+        </button>
+        <button type="button" class="nav-tab" data-route="diet">
+          <span class="ico" aria-hidden="true">🥗</span>饮食
+        </button>
+        <button type="button" class="nav-tab" data-route="arena">
+          <span class="ico" aria-hidden="true">⚔️</span>竞技场
+        </button>
+        <button type="button" class="nav-tab" data-route="profile">
+          <span class="ico" aria-hidden="true">👤</span>我的
+        </button>
+      </div>
+    </nav>
+
+    <div id="modal-root"></div>
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var STORAGE_PROFILE = "gamefit-offline-spa-profile";
+        var STORAGE_SESSION = "gamefit-offline-spa-session";
+
+        var BEAST_EMOJI = {
+          leon: "🐺",
+          mercury: "🌊",
+          atlas: "🐨",
+          luna: "🌙",
+          pyro: "🔥",
+          volt: "✨",
+        };
+
+        var BEAST_CATALOG = [
+          { id: "leon", nameZh: "莱昂", nameEn: "Leon", oneLiner: "鬃芒环绕 · 稳健之王" },
+          { id: "mercury", nameZh: "墨丘利", nameEn: "Mercury", oneLiner: "流线叠羽 · 迅捷之风" },
+          { id: "atlas", nameZh: "阿特拉斯", nameEn: "Atlas", oneLiner: "岩峦叠嶂 · 负重之力" },
+          { id: "luna", nameZh: "露娜", nameEn: "Luna", oneLiner: "月滴水纹 · 柔韧之尾" },
+          { id: "pyro", nameZh: "派罗", nameEn: "Pyro", oneLiner: "棱角焰脊 · 爆发之心" },
+          { id: "volt", nameZh: "晶岚", nameEn: "Volt", oneLiner: "晶羽幻狐 · 电光之跃" },
+        ];
+
+        var GOAL_OPTIONS = [
+          { id: "fat_loss", label: "减脂", hint: "修长体态 · 燃脂光晕" },
+          { id: "muscle_gain", label: "增肌", hint: "线条加粗 · 膨胀轮廓" },
+          { id: "body_shape", label: "塑形", hint: "锐利投影 · 金属偏光" },
+          { id: "vitality", label: "增强体质", hint: "免疫粒子 · 活力环绕" },
+        ];
+
+        var MODES = ["normal", "holiday", "finals"];
+        var MODE_LABEL = { normal: "正常模式", holiday: "假期模式", finals: "期末模式" };
+
+        function computeBmi(h, w) {
+          var m = h / 100;
+          if (m <= 0 || w <= 0) return 22;
+          return w / (m * m);
+        }
+
+        function loadJSON(key, fallback) {
+          try {
+            var s = localStorage.getItem(key);
+            if (!s) return fallback;
+            return JSON.parse(s);
+          } catch (e) {
+            return fallback;
+          }
+        }
+
+        function saveJSON(key, obj) {
+          try {
+            localStorage.setItem(key, JSON.stringify(obj));
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+
+        function defaultProfile() {
+          return {
+            heightCm: 170,
+            weightKg: 65,
+            goal: "fat_loss",
+            beastId: "leon",
+            nickname: "未命名幻兽",
+            onboardingComplete: false,
+          };
+        }
+
+        function defaultSession() {
+          return {
+            fitMode: "normal",
+            coins: 30,
+            energyPct: 24,
+            activationDone: [false, false, false, false, false],
+            coreDone: [false, false, false, false, false],
+            challengeDone: [false, false, false, false, false],
+            awakenBonus: null,
+            dietWaterMl: 620,
+            dietMeals: [
+              { t: "早餐", name: "燕麦牛奶", kcal: 320 },
+              { t: "午餐", name: "鸡胸杂粮饭", kcal: 520 },
+            ],
+          };
+        }
+
+        var state = {
+          route: "home",
+          profile: loadJSON(STORAGE_PROFILE, null),
+          session: loadJSON(STORAGE_SESSION, null),
+          onboardingStep: "survey",
+          onboardingEdit: false,
+          exerciseTab: "plan",
+        };
+
+        if (!state.profile) state.profile = defaultProfile();
+        if (!state.session) state.session = defaultSession();
+
+        function persistProfile() {
+          saveJSON(STORAGE_PROFILE, state.profile);
+        }
+        function persistSession() {
+          saveJSON(STORAGE_SESSION, state.session);
+        }
+
+        function toast(msg) {
+          var el = document.getElementById("toast");
+          el.textContent = msg;
+          el.classList.add("show");
+          clearTimeout(toast._t);
+          toast._t = setTimeout(function () {
+            el.classList.remove("show");
+          }, 2200);
+        }
+
+        function setRoute(route) {
+          state.route = route;
+          if (route === "onboarding") {
+            location.hash = "#/onboarding";
+          } else {
+            location.hash = "#/" + route;
+          }
+          render();
+        }
+
+        function parseHash() {
+          var h = (location.hash || "#/home").replace(/^#\/?/, "");
+          if (h === "onboarding" || h.startsWith("onboarding")) return "onboarding";
+          if (["home", "exercise", "diet", "arena", "profile"].indexOf(h) >= 0) return h;
+          return "home";
+        }
+
+        window.addEventListener("hashchange", function () {
+          state.route = parseHash();
+          render();
+        });
+
+        function esc(s) {
+          return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        function openModal(html, onBackdrop) {
+          var root = document.getElementById("modal-root");
+          root.innerHTML =
+            '<div class="overlay" id="ov">' +
+            '<div class="sheet fade-in" id="sheet">' +
+            html +
+            "</div></div>";
+          document.getElementById("ov").addEventListener("click", function (e) {
+            if (e.target.id === "ov") {
+              root.innerHTML = "";
+              if (onBackdrop) onBackdrop();
+            }
+          });
+        }
+
+        function closeModal() {
+          document.getElementById("modal-root").innerHTML = "";
+        }
+
+        function cycleMode() {
+          var i = MODES.indexOf(state.session.fitMode);
+          state.session.fitMode = MODES[(i + 1) % MODES.length];
+          persistSession();
+          toast("模式：" + MODE_LABEL[state.session.fitMode]);
+          render();
+        }
+
+        /* ---------- Onboarding ---------- */
+        function startOnboarding(edit) {
+          state.onboardingEdit = !!edit;
+          state.onboardingStep = "survey";
+          setRoute("onboarding");
+        }
+
+        function onboardingHtml() {
+          var p = state.profile;
+          var step = state.onboardingStep;
+          var edit = state.onboardingEdit;
+          var bmi = computeBmi(p.heightCm, p.weightKg);
+
+          var head =
+            '<header style="text-align:center;margin-bottom:1rem">' +
+            '<p class="eyebrow">' +
+            (edit ? "Revise" : "Awakening") +
+            "</p>" +
+            "<h1 class=\"page-title\">" +
+            (edit ? "契约修订" : "觉醒仪式") +
+            "</h1>" +
+            '<p class="subtitle">' +
+            (edit ? "更新身体数据、诉求与幻兽后保存。" : "数据调查 → 选兽 → 预览 → 命名") +
+            "</p></header>";
+
+          var cancel =
+            '<div style="text-align:center;margin-bottom:.75rem">' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="btn-cancel-onb">' +
+            (edit ? "取消 · 返回" : "稍后回来") +
+            "</button></div>";
+
+          if (step === "survey") {
+            var goals = GOAL_OPTIONS.map(function (g) {
+              return (
+                '<button type="button" class="goal-opt ' +
+                (p.goal === g.id ? "on" : "") +
+                '" data-goal="' +
+                g.id +
+                '">' +
+                esc(g.label) +
+                '<span style="display:block;font-size:.65rem;font-weight:700;color:var(--muted);margin-top:.2rem">' +
+                esc(g.hint) +
+                "</span></button>"
+              );
+            }).join("");
+
+            return (
+              head +
+              cancel +
+              '<div class="card"><h3 class="card-title">① 数据调查</h3>' +
+              '<label><span>身高（cm）</span><input type="number" min="130" max="230" id="in-h" value="' +
+              p.heightCm +
+              '"/></label>' +
+              '<label style="margin-top:.65rem;display:block"><span>体重（kg）</span><input type="number" min="35" max="180" step="0.1" id="in-w" value="' +
+              p.weightKg +
+              '"/></label>' +
+              '<p style="margin:.65rem 0 .35rem;font-size:.7rem;font-weight:700;color:var(--muted)">运动诉求</p>' +
+              '<div class="goal-grid">' +
+              goals +
+              "</div>" +
+              '<p style="text-align:center;margin:.75rem 0;font-size:.75rem;font-weight:800;color:var(--blue)">当前 BMI：' +
+              bmi.toFixed(1) +
+              "</p>" +
+              '<button type="button" class="btn btn-green" style="width:100%" id="btn-survey-next">下一步 · 幻兽召唤</button></div>'
+            );
+          }
+
+          if (step === "summon") {
+            var cards = BEAST_CATALOG.map(function (b) {
+              return (
+                '<button type="button" class="beast-card ' +
+                (p.beastId === b.id ? "on" : "") +
+                '" data-beast="' +
+                b.id +
+                '">' +
+                '<div class="beast-sil">' +
+                BEAST_EMOJI[b.id] +
+                "</div>" +
+                '<p style="margin:.35rem 0 0;font-size:.72rem;font-weight:900">' +
+                esc(b.nameZh) +
+                ' <span style="color:var(--muted);font-weight:800">' +
+                esc(b.nameEn) +
+                "</span></p>" +
+                '<p style="margin:.15rem 0 0;font-size:.62rem;color:var(--muted)">' +
+                esc(b.oneLiner) +
+                "</p></button>"
+              );
+            }).join("");
+            return (
+              head +
+              cancel +
+              '<div class="card"><h3 class="card-title">② 幻兽召唤</h3>' +
+              '<p style="font-size:.8rem;color:var(--muted);margin:0 0 .65rem">点选一只官方幻兽（演示用 emoji 剪影）。</p>' +
+              '<div class="beast-grid">' +
+              cards +
+              "</div>" +
+              '<div class="row" style="margin-top:.85rem">' +
+              '<button type="button" class="btn btn-ghost flex-1" style="flex:1" id="btn-back-survey">上一步</button>' +
+              '<button type="button" class="btn btn-green flex-1" style="flex:1" id="btn-summon-next">下一步 · 契约预览</button></div></div>'
+            );
+          }
+
+          if (step === "covenant") {
+            return (
+              head +
+              cancel +
+              '<div class="card"><h3 class="card-title">③ 契约预览</h3>' +
+              '<p style="font-size:.78rem;color:var(--muted)">BMI 映射演示：<code style="color:var(--blue)">scaleX ≈ 1 + (BMI−22)×0.05</code></p>' +
+              '<div style="text-align:center;margin:.85rem 0">' +
+              '<span class="stage-beast" aria-hidden="true">' +
+              BEAST_EMOJI[p.beastId] +
+              "</span>" +
+              '<p style="margin:.35rem 0 0;font-weight:800">' +
+              esc(BEAST_CATALOG.find(function (x) {
+                return x.id === p.beastId;
+              }).nameZh) +
+              " · BMI " +
+              bmi.toFixed(1) +
+              "</p></div>" +
+              '<div class="row">' +
+              '<button type="button" class="btn btn-ghost" style="flex:1" id="btn-back-summon">上一步</button>' +
+              '<button type="button" class="btn btn-green" style="flex:1" id="btn-covenant-next">下一步 · 命名</button></div></div>'
+            );
+          }
+
+          /* naming */
+          return (
+            head +
+            cancel +
+            '<div class="card"><h3 class="card-title">④ 命名仪式</h3>' +
+            '<label><span>幻兽昵称</span><input type="text" maxlength="16" id="in-nick" value="' +
+            esc(p.nickname) +
+            '" placeholder="例如：焰尾小叶"/></label>' +
+            '<p style="font-size:.7rem;color:var(--muted);margin:.65rem 0 0">保存后写入本页专用 localStorage（键：' +
+            STORAGE_PROFILE +
+            "）。</p>" +
+            '<div class="row" style="margin-top:.85rem">' +
+            '<button type="button" class="btn btn-ghost" style="flex:1" id="btn-back-covenant">上一步</button>' +
+            '<button type="button" class="btn btn-green" style="flex:1" id="btn-finish">' +
+            (edit ? "保存修改" : "签订契约") +
+            "</button></div></div>"
+          );
+        }
+
+        function bindOnboarding() {
+          var p = state.profile;
+
+          var c = document.getElementById("btn-cancel-onb");
+          if (c)
+            c.onclick = function () {
+              if (state.onboardingEdit) {
+                location.hash = "#/profile";
+              } else {
+                toast("请先完成觉醒；或清空本站存储后重新开始。");
+              }
+            };
+
+          document.querySelectorAll("[data-goal]").forEach(function (btn) {
+            btn.onclick = function () {
+              p.goal = btn.getAttribute("data-goal");
+              persistProfile();
+              render();
+            };
+          });
+
+          var sn = document.getElementById("btn-survey-next");
+          if (sn) {
+            sn.onclick = function () {
+              var h = +document.getElementById("in-h").value;
+              var w = +document.getElementById("in-w").value;
+              if (h < 130 || h > 230 || w < 35 || w > 180) {
+                toast("请填写合理身高体重");
+                return;
+              }
+              p.heightCm = h;
+              p.weightKg = w;
+              persistProfile();
+              state.onboardingStep = "summon";
+              render();
+            };
+          }
+
+          document.querySelectorAll("[data-beast]").forEach(function (btn) {
+            btn.onclick = function () {
+              p.beastId = btn.getAttribute("data-beast");
+              persistProfile();
+              render();
+            };
+          });
+
+          var bs = document.getElementById("btn-back-survey");
+          if (bs) {
+            bs.onclick = function () {
+              state.onboardingStep = "survey";
+              render();
+            };
+          }
+          var snext = document.getElementById("btn-summon-next");
+          if (snext) {
+            snext.onclick = function () {
+              state.onboardingStep = "covenant";
+              render();
+            };
+          }
+
+          var bc = document.getElementById("btn-back-summon");
+          if (bc) {
+            bc.onclick = function () {
+              state.onboardingStep = "summon";
+              render();
+            };
+          }
+          var cn = document.getElementById("btn-covenant-next");
+          if (cn) {
+            cn.onclick = function () {
+              state.onboardingStep = "naming";
+              render();
+            };
+          }
+
+          var bco = document.getElementById("btn-back-covenant");
+          if (bco) {
+            bco.onclick = function () {
+              state.onboardingStep = "covenant";
+              render();
+            };
+          }
+
+          var fin = document.getElementById("btn-finish");
+          if (fin) {
+            fin.onclick = function () {
+              var nick = document.getElementById("in-nick").value.trim() || "未命名幻兽";
+              p.nickname = nick;
+              p.onboardingComplete = true;
+              persistProfile();
+              toast(state.onboardingEdit ? "已保存" : "契约达成");
+              location.hash = "#/home";
+            };
+          }
+        }
+
+        /* ---------- Home ---------- */
+        function renderHome() {
+          var p = state.profile;
+          var s = state.session;
+          var bmi = computeBmi(p.heightCm, p.weightKg);
+          var modeLbl = MODE_LABEL[s.fitMode];
+
+          var tasksActivation = ["开合跳 ×30", "深蹲 ×15", "高抬腿 ×40", "平板支撑 30s", "弓箭步左右各10"];
+          var tasksCore = ["慢跑 15min", "跳绳 5min", "自定义动作", "拉伸 8min", "快走 20min"];
+          var tasksCh = ["波比 ×8", "登山跑 ×20", "自定义挑战", "冲刺跑 3 组", "核心卷腹 ×25"];
+
+          function lines(title, arr, doneKey, onToggle, rerollId) {
+            var done = s[doneKey];
+            var lis = arr
+              .map(function (t, i) {
+                return (
+                  '<label class="task-line">' +
+                  '<input type="checkbox" class="check" data-' +
+                  doneKey +
+                  '="' +
+                  i +
+                  '" ' +
+                  (done[i] ? "checked" : "") +
+                  "/>" +
+                  "<span>" +
+                  esc(t) +
+                  "</span></label>"
+                );
+              })
+              .join("");
+            return (
+              '<div class="card"><div class="row row-between">' +
+              '<h3 class="card-title" style="margin:0">' +
+              esc(title) +
+              "</h3>" +
+              '<button type="button" class="btn btn-ghost btn-sm" id="' +
+              rerollId +
+              '">重摇 −6币</button></div>' +
+              lis +
+              "</div>"
+            );
+          }
+
+          return (
+            '<div class="fade-in">' +
+            '<div class="row row-between" style="margin-bottom:1rem">' +
+            "<div>" +
+            '<p class="eyebrow">Home</p>' +
+            '<h1 class="page-title">首页</h1>' +
+            '<p class="subtitle">任务驱动幻兽进化 · 当前状态一目了然</p></div>' +
+            '<div class="row">' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="btn-edit-contract">编辑契约</button>' +
+            '<button type="button" class="btn btn-blue btn-sm" id="btn-cycle-mode">' +
+            esc(modeLbl) +
+            "</button></div></div>" +
+            '<section class="card">' +
+            '<div class="row row-between">' +
+            "<div>" +
+            '<p class="eyebrow" style="margin:0">Phantom Stage</p>' +
+            '<h3 class="card-title" style="margin:.15rem 0 0">幻兽舞台</h3></div>' +
+            '<span class="pill pill-green">BMI ' +
+            bmi.toFixed(1) +
+            "</span></div>" +
+            '<div style="text-align:center;padding:.5rem 0">' +
+            '<button type="button" class="stage-beast-hit" id="btn-beast-interact" aria-label="打开互动">' +
+            '<span class="stage-beast">' +
+            BEAST_EMOJI[p.beastId] +
+            "</span>" +
+            '<span class="pill pill-blue" style="margin-top:.35rem;display:inline-block">点我互动</span>' +
+            "</button></div>" +
+            '<div style="margin-top:.65rem">' +
+            '<div class="row row-between" style="margin-bottom:.25rem;font-size:.72rem;font-weight:800;color:var(--muted)">' +
+            "<span>今日能量</span><span>" +
+            s.energyPct +
+            "%</span></div>" +
+            '<div class="progress"><i style="width:' +
+            Math.min(100, s.energyPct) +
+            '%"></i></div></div>' +
+            '<p style="text-align:center;margin:.65rem 0 0;font-size:.72rem;color:var(--muted)">' +
+            esc(p.nickname) +
+            " · 属性演示 Lv.3 · 炼金币 " +
+            s.coins +
+            "</p></section>" +
+            lines("⑤ 激活热身（完成 ≥3）", tasksActivation, "activationDone", null, "reroll-act") +
+            lines("⑥ 核心训练（完成 ≥2）", tasksCore, "coreDone", null, "reroll-core") +
+            lines("⑦ 挑战加码（完成 ≥1）", tasksCh, "challengeDone", null, "reroll-ch") +
+            "</div>"
+          );
+        }
+
+        function bindHome() {
+          document.getElementById("btn-cycle-mode").onclick = cycleMode;
+          document.getElementById("btn-edit-contract").onclick = function () {
+            startOnboarding(true);
+          };
+
+          function bindChecks(key) {
+            document.querySelectorAll("[data-" + key + "]").forEach(function (el) {
+              el.onchange = function () {
+                var i = +el.getAttribute("data-" + key);
+                state.session[key][i] = el.checked;
+                persistSession();
+                render();
+              };
+            });
+          }
+          bindChecks("activationDone");
+          bindChecks("coreDone");
+          bindChecks("challengeDone");
+
+          function reroll(id, cost) {
+            var btn = document.getElementById(id);
+            if (!btn) return;
+            btn.onclick = function () {
+              if (state.session.coins < cost) {
+                toast("炼金币不足");
+                return;
+              }
+              state.session.coins -= cost;
+              persistSession();
+              toast("已重摇任务池（演示）");
+              render();
+            };
+          }
+          reroll("reroll-act", 6);
+          reroll("reroll-core", 6);
+          reroll("reroll-ch", 6);
+
+          document.getElementById("btn-beast-interact").onclick = function () {
+            var p = state.profile;
+            var s = state.session;
+            openModal(
+              '<h3>幻兽互动（演示）</h3>' +
+                '<p style="font-size:.8rem;color:var(--muted)">' +
+                esc(p.nickname) +
+                " · 今日能量 " +
+                s.energyPct +
+                "%</p>" +
+                '<button type="button" class="btn btn-green" style="width:100%;margin-top:.5rem" id="m-awaken">一键觉醒（演示 +10% 能量）</button>' +
+                '<button type="button" class="btn btn-blue" style="width:100%;margin-top:.5rem" id="m-bonus">领取加成：属性+1（演示）</button>' +
+                '<button type="button" class="btn btn-ghost" style="width:100%;margin-top:.75rem" id="m-close">关闭</button>',
+              null,
+            );
+            document.getElementById("m-awaken").onclick = function () {
+              s.energyPct = Math.min(100, s.energyPct + 10);
+              persistSession();
+              toast("能量提升");
+              closeModal();
+              render();
+            };
+            document.getElementById("m-bonus").onclick = function () {
+              state.session.awakenBonus = "attribute";
+              persistSession();
+              toast("已记录加成（演示）");
+              closeModal();
+            };
+            document.getElementById("m-close").onclick = closeModal;
+          };
+        }
+
+        /* ---------- Profile ---------- */
+        function renderProfile() {
+          var p = state.profile;
+          return (
+            '<div class="fade-in">' +
+            '<p class="eyebrow">Profile</p>' +
+            '<h1 class="page-title">我的</h1>' +
+            '<p class="subtitle">档案与概况（单机演示）</p>' +
+            '<header class="card row row-between" style="margin-top:1rem;align-items:flex-start">' +
+            '<div class="row" style="gap:.85rem">' +
+            '<div style="width:3.5rem;height:3.5rem;border-radius:1rem;background:rgba(28,176,246,.2);display:flex;align-items:center;justify-content:center;font-size:1.75rem">🎓</div>' +
+            "<div>" +
+            '<h2 style="margin:0;font-size:1.25rem;font-weight:900">' +
+            esc(p.nickname) +
+            "</h2>" +
+            '<p style="margin:.2rem 0 0;font-size:.8rem;color:var(--muted)">演示校园 · 计算机学院</p>' +
+            '<div class="row" style="margin-top:.45rem">' +
+            '<span class="pill pill-green">Lv.12</span>' +
+            '<span class="pill pill-blue">连胜 7 天</span></div></div></div>' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="btn-edit-profile">编辑资料</button></header>' +
+            '<div class="card"><h3 class="card-title">契约摘要</h3>' +
+            '<ul style="margin:0;padding-left:1rem;color:var(--muted);font-size:.82rem;line-height:1.7">' +
+            "<li>幻兽：" +
+            esc(BEAST_CATALOG.find(function (b) {
+              return b.id === p.beastId;
+            }).nameZh) +
+            "</li>" +
+            "<li>诉求：" +
+            esc(GOAL_OPTIONS.find(function (g) {
+              return g.id === p.goal;
+            }).label) +
+            "</li>" +
+            "<li>身高体重：" +
+            p.heightCm +
+            " cm / " +
+            p.weightKg +
+            " kg</li></ul></div>" +
+            '<div class="card"><h3 class="card-title">社交与概况 · 演示</h3>' +
+            '<p style="font-size:.8rem;color:var(--muted)">雷达图、镜像照等在完整 Next 版中；此处仅占位。</p>' +
+            '<button type="button" class="btn btn-blue" style="margin-top:.65rem" id="btn-go-arena">去竞技场</button></div></div>'
+          );
+        }
+
+        function bindProfile() {
+          document.getElementById("btn-edit-profile").onclick = function () {
+            startOnboarding(true);
+          };
+          document.getElementById("btn-go-arena").onclick = function () {
+            location.hash = "#/arena";
+          };
+        }
+
+        /* ---------- Exercise ---------- */
+        function renderExercise() {
+          var tab = state.exerciseTab;
+          return (
+            '<div class="fade-in">' +
+            '<p class="eyebrow">Exercise</p>' +
+            '<h1 class="page-title">运动</h1>' +
+            '<p class="subtitle">计划与记录（单机演示）</p>' +
+            '<div class="row" style="margin-top:1rem">' +
+            '<button type="button" class="btn ' +
+            (tab === "plan" ? "btn-green" : "btn-ghost") +
+            ' btn-sm" data-ex-tab="plan">今日计划</button>' +
+            '<button type="button" class="btn ' +
+            (tab === "stretch" ? "btn-green" : "btn-ghost") +
+            ' btn-sm" data-ex-tab="stretch">放松拉伸</button></div>' +
+            (tab === "plan"
+              ? '<div class="card"><h3 class="card-title">今日计划</h3>' +
+                '<p style="font-size:.8rem;color:var(--muted)">与首页任务联动可在 Next 版实现；这里做计时演示。</p>' +
+                '<p id="timer-display" style="font-size:2rem;font-weight:900;text-align:center;margin:.75rem 0">05:00</p>' +
+                '<div class="row">' +
+                '<button type="button" class="btn btn-green" id="btn-timer-start">开始 5 分钟</button>' +
+                '<button type="button" class="btn btn-ghost" id="btn-timer-reset">重置</button></div></div>'
+              : '<div class="card"><h3 class="card-title">放松拉伸</h3>' +
+                '<ol style="margin:0;padding-left:1rem;color:var(--muted);font-size:.85rem;line-height:1.8">' +
+                "<li>肩颈绕环 ×8</li><li>猫牛式 ×10</li><li>站姿体前屈 30s</li></ol></div>") +
+            "</div>"
+          );
+        }
+
+        var timerIv = null;
+        var timerSec = 300;
+
+        function bindExercise() {
+          document.querySelectorAll("[data-ex-tab]").forEach(function (b) {
+            b.onclick = function () {
+              state.exerciseTab = b.getAttribute("data-ex-tab");
+              clearInterval(timerIv);
+              timerIv = null;
+              render();
+            };
+          });
+          var disp = document.getElementById("timer-display");
+          var start = document.getElementById("btn-timer-start");
+          var reset = document.getElementById("btn-timer-reset");
+          if (!start) return;
+
+          function showT() {
+            if (!disp) return;
+            var m = Math.floor(timerSec / 60);
+            var s = timerSec % 60;
+            disp.textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+          }
+          showT();
+
+          start.onclick = function () {
+            clearInterval(timerIv);
+            timerSec = 300;
+            showT();
+            timerIv = setInterval(function () {
+              timerSec--;
+              showT();
+              if (timerSec <= 0) {
+                clearInterval(timerIv);
+                timerIv = null;
+                toast("计时结束 · 演示完成");
+              }
+            }, 1000);
+          };
+          reset.onclick = function () {
+            clearInterval(timerIv);
+            timerIv = null;
+            timerSec = 300;
+            showT();
+          };
+        }
+
+        /* ---------- Diet ---------- */
+        function renderDiet() {
+          var s = state.session;
+          var rows = s.dietMeals
+            .map(function (m, i) {
+              return (
+                "<tr><td>" +
+                esc(m.t) +
+                "</td><td>" +
+                esc(m.name) +
+                "</td><td>" +
+                m.kcal +
+                " kcal</td>" +
+                '<td><button type="button" class="btn btn-ghost btn-sm" data-del-meal="' +
+                i +
+                '">删</button></td></tr>'
+              );
+            })
+            .join("");
+          return (
+            '<div class="fade-in">' +
+            '<p class="eyebrow">Diet</p>' +
+            '<h1 class="page-title">饮食</h1>' +
+            '<p class="subtitle">全日热量与饮水（单机演示）</p>' +
+            '<div class="card"><h3 class="card-title">饮水</h3>' +
+            '<div class="row row-between">' +
+            "<span style=\"font-size:.85rem;font-weight:800\">已喝 " +
+            s.dietWaterMl +
+            " ml</span>" +
+            '<button type="button" class="btn btn-blue btn-sm" id="btn-water">+250ml</button></div></div>' +
+            '<div class="card"><h3 class="card-title">餐次</h3>' +
+            '<table class="simple"><thead><tr><th>餐次</th><th>内容</th><th>热量</th><th></th></tr></thead><tbody>' +
+            rows +
+            "</tbody></table>" +
+            '<button type="button" class="btn btn-green btn-sm" style="margin-top:.65rem" id="btn-add-meal">加餐（演示）</button></div></div>'
+          );
+        }
+
+        function bindDiet() {
+          document.getElementById("btn-water").onclick = function () {
+            state.session.dietWaterMl += 250;
+            persistSession();
+            render();
+          };
+          document.getElementById("btn-add-meal").onclick = function () {
+            state.session.dietMeals.push({ t: "加餐", name: "酸奶坚果", kcal: 180 });
+            persistSession();
+            render();
+          };
+          document.querySelectorAll("[data-del-meal]").forEach(function (b) {
+            b.onclick = function () {
+              var i = +b.getAttribute("data-del-meal");
+              state.session.dietMeals.splice(i, 1);
+              persistSession();
+              render();
+            };
+          });
+        }
+
+        /* ---------- Arena ---------- */
+        function renderArena() {
+          var p = state.profile;
+          var rows = [
+            { rank: 1, name: "阿杰", min: 92, tier: "钻石 III" },
+            { rank: 2, name: "小林", min: 88, tier: "铂金 I" },
+            { rank: 3, name: "你", min: 76, tier: "黄金 II", self: true },
+            { rank: 4, name: "凯西", min: 71, tier: "黄金 III" },
+            { rank: 5, name: "周周", min: 64, tier: "白银 I" },
+          ];
+          var body = rows
+            .map(function (r) {
+              return (
+                "<tr" +
+                (r.self ? ' style="background:rgba(88,204,2,.08)"' : "") +
+                "><td>" +
+                r.rank +
+                "</td><td>" +
+                esc(r.name) +
+                " " +
+                (r.self ? BEAST_EMOJI[p.beastId] : "·") +
+                "</td><td>" +
+                r.min +
+                " min</td><td>" +
+                esc(r.tier) +
+                "</td></tr>"
+              );
+            })
+            .join("");
+          return (
+            '<div class="fade-in">' +
+            '<p class="eyebrow">Arena</p>' +
+            '<h1 class="page-title">竞技场</h1>' +
+            '<p class="subtitle">排行榜与好友 PK（演示数据）</p>' +
+            '<div class="card"><h3 class="card-title">今日榜单</h3>' +
+            '<table class="simple"><thead><tr><th>#</th><th>选手</th><th>时长</th><th>段位</th></tr></thead><tbody>' +
+            body +
+            "</tbody></table>" +
+            '<button type="button" class="btn btn-green" style="margin-top:.75rem;width:100%" id="btn-pk">好友 PK（演示）</button></div></div>'
+          );
+        }
+
+        function bindArena() {
+          document.getElementById("btn-pk").onclick = function () {
+            openModal(
+              '<h3>好友 PK</h3><p style="color:var(--muted);font-size:.85rem">完整版含雷达对比；此处为占位。</p>' +
+                '<button type="button" class="btn btn-ghost" style="width:100%;margin-top:.5rem" id="pk-x">关闭</button>',
+              null,
+            );
+            document.getElementById("pk-x").onclick = closeModal;
+          };
+        }
+
+        /* ---------- Render root ---------- */
+        function render() {
+          state.route = parseHash();
+          if (!state.profile.onboardingComplete && state.route !== "onboarding") {
+            location.hash = "#/onboarding";
+            state.route = "onboarding";
+          }
+
+          var shell = document.getElementById("shell-header");
+          var nav = document.getElementById("bottom-nav");
+          var main = document.getElementById("main");
+
+          if (state.route === "onboarding") {
+            shell.classList.add("hidden");
+            nav.classList.add("hidden");
+            document.body.style.paddingBottom = "1.25rem";
+            main.innerHTML = onboardingHtml();
+            bindOnboarding();
+            return;
+          }
+
+          shell.classList.remove("hidden");
+          nav.classList.remove("hidden");
+          document.body.style.paddingBottom = "5.5rem";
+
+          document.querySelectorAll(".nav-tab").forEach(function (btn) {
+            btn.classList.toggle("active", btn.getAttribute("data-route") === state.route);
+          });
+
+          document.getElementById("shell-tagline").textContent =
+            "模式：" + MODE_LABEL[state.session.fitMode] + " · 单机演示";
+
+          closeModal();
+
+          if (state.route === "home") {
+            main.innerHTML = renderHome();
+            bindHome();
+          } else if (state.route === "profile") {
+            main.innerHTML = renderProfile();
+            bindProfile();
+          } else if (state.route === "exercise") {
+            main.innerHTML = renderExercise();
+            bindExercise();
+          } else if (state.route === "diet") {
+            main.innerHTML = renderDiet();
+            bindDiet();
+          } else if (state.route === "arena") {
+            main.innerHTML = renderArena();
+            bindArena();
+          }
+
+          document.querySelectorAll(".nav-tab").forEach(function (btn) {
+            btn.onclick = function () {
+              location.hash = "#/" + btn.getAttribute("data-route");
+            };
+          });
+        }
+
+        state.route = parseHash();
+        render();
+      })();
+    </script>
+  </body>
+</html>

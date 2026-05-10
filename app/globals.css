@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --duo-bg: #1a1a2e;
+  --duo-green: #58cc02;
+  --duo-blue: #1cb0f6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-duo-bg text-duo-ink antialiased min-h-dvh;
+}
+
+/* Safe area for notched phones */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@keyframes phantom-breathe {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.045) translateY(-10px);
+    filter: brightness(1.06);
+  }
+}
+
+.phantom-breathe {
+  animation: phantom-breathe 3.6s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes float-book {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(-14px) rotate(6deg);
+    opacity: 0.85;
+  }
+}
+
+.float-book {
+  animation: float-book 5s ease-in-out infinite;
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 0.45;
+  }
+}
+
+.float-soft {
+  animation: float-soft 4s ease-in-out infinite;
+}
+
+@keyframes vitality-dot-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: translateX(96px) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(96px) scale(1.38);
+  }
+}
+
+.vitality-pulse-dot {
+  animation: vitality-dot-pulse 2.85s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes awaken-transition {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.awaken-overlay {
+  animation: awaken-transition 1.05s ease-in-out forwards;
+}
+
+/*
+ * 黑底 (#000) 立绘叠在 duo-bg (#1a1a2e) 上时，lighten 让纯黑区域透出页面底色。
+ * 真透明 PNG 请勿使用此类名，以免边缘发灰。
+ */
+.beast-kill-black-matte {
+  mix-blend-mode: lighten;
+}
+
+/* 塑形诉求：轮廓流光（SVG 描边） */
+@keyframes beast-sculpt-flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+.beast-sculpt-dash path,
+.beast-sculpt-dash rect,
+.beast-sculpt-dash polygon {
+  stroke-dasharray: 6 12;
+  stroke-dashoffset: 0;
+  animation: beast-sculpt-flow 2.1s linear infinite;
+}
+
