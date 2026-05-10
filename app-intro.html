@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>游戏化运动激励工具 · 幻兽进化</title>
+    <meta
+      name="description"
+      content="任务驱动幻兽进化——炼金台、契约修订与成长档案（静态介绍页，可离线打开）。"
+    />
+    <style>
+      :root {
+        --bg: #1a1a2e;
+        --surface: #252542;
+        --surface2: #2d2d4a;
+        --ink: #e8e8ef;
+        --muted: #9b9bb8;
+        --green: #58cc02;
+        --green-dark: #46a302;
+        --blue: #1cb0f6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.6;
+        padding: clamp(1.25rem, 4vw, 2.5rem);
+      }
+      .wrap {
+        max-width: 40rem;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+      }
+      .tag {
+        font-size: 0.6875rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 1rem;
+        margin: 0 0 2rem;
+      }
+      section {
+        background: var(--surface);
+        border: 2px solid var(--surface2);
+        border-radius: 1.25rem;
+        padding: 1.25rem 1.35rem;
+        margin-bottom: 1rem;
+      }
+      section h2 {
+        margin: 0 0 0.65rem;
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--green);
+      }
+      ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--muted);
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.75rem;
+      }
+      a.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 1rem;
+        font-weight: 800;
+        font-size: 0.9375rem;
+        text-decoration: none;
+        border: 2px solid transparent;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease;
+      }
+      a.button:active {
+        transform: translateY(2px);
+      }
+      a.primary {
+        background: var(--green);
+        color: #fff;
+        border-color: var(--green-dark);
+        box-shadow: 0 4px 0 0 var(--green-dark);
+      }
+      a.primary:active {
+        box-shadow: 0 2px 0 0 var(--green-dark);
+      }
+      a.secondary {
+        background: var(--surface);
+        color: var(--ink);
+        border-color: var(--surface2);
+        box-shadow: 0 4px 0 0 #12121f;
+      }
+      a.secondary:active {
+        box-shadow: 0 2px 0 0 #12121f;
+      }
+      footer {
+        margin-top: 2rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="tag">GameFit · Duo</p>
+      <h1>游戏化运动激励工具 · 幻兽进化</h1>
+      <p class="lead">
+        专为大学生打造的轻量化激励原型：首页炼金任务、幻兽舞台、契约修订与本地档案演示。
+      </p>
+
+      <section>
+        <h2>你能做什么</h2>
+        <ul>
+          <li>在<strong style="color: var(--ink)">首页</strong>查看今日能量与训练任务，点击幻兽互动。</li>
+          <li>在<strong style="color: var(--ink)">我的</strong>查看概况；「编辑资料」可修改身高体重、诉求与幻兽。</li>
+          <li>数据默认保存在浏览器本地（演示用），清除站点数据会重置契约。</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>如何打开完整应用</h2>
+        <ul>
+          <li>在项目目录运行开发服务后，浏览器访问本机的 Next 地址（例如端口 <code style="color: var(--blue)">3040</code>）。</li>
+          <li>本页为静态 HTML，仅作说明；交互功能需在 Next 应用内使用。</li>
+        </ul>
+      </section>
+
+      <div class="cta-row">
+        <a class="button primary" href="/">进入应用首页</a>
+        <a class="button secondary" href="/profile">进入我的</a>
+      </div>
+
+      <footer>
+        <p>
+          若通过本地开发服务访问本页（例如 <code style="color: var(--blue)">http://localhost:3040/app-intro.html</code>），上方按钮可跳进应用；若用「文件双击」离线打开，根路径链接可能无效。
+        </p>
+        <p style="margin-top: 0.75rem">
+          配色参考：背景 <code style="color: var(--blue)">#1a1a2e</code> · 主绿
+          <code style="color: var(--green)">#58cc02</code>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
